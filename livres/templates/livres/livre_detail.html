@@ -1,0 +1,101 @@
+{% extends 'livres/base.html' %}
+
+{% block title %}{{ livre.titre }} - Bibliothèque{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 3rem;">
+    <div style="margin-bottom: 2rem;">
+        <a href="{% url 'livre_list' %}" style="color: var(--color-text-muted);">← Retour à la liste</a>
+    </div>
+
+    <div class="card fade-in">
+        <div class="card-header">
+            <div>
+                {% if livre.est_disponible %}
+                <span class="badge badge-success">Disponible</span>
+                {% else %}
+                <span class="badge badge-warning">Emprunté</span>
+                {% endif %}
+                <h1 class="card-title" style="margin-top: 0.5rem;">{{ livre.titre }}</h1>
+            </div>
+            <div class="card-actions">
+                <a href="{% url 'livre_update' livre.pk %}" class="btn btn-secondary">Modifier</a>
+                <a href="{% url 'livre_delete' livre.pk %}" class="btn btn-danger">Supprimer</a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="card-meta">
+                <div class="card-meta-item">
+                    <span class="card-meta-label">Auteur</span>
+                    <span class="card-meta-value" style="font-size: 1.2rem;">{{ livre.auteur }}</span>
+                </div>
+                <div class="card-meta-item">
+                    <span class="card-meta-label">ISBN</span>
+                    <span class="card-meta-value">{{ livre.isbn }}</span>
+                </div>
+                <div class="card-meta-item">
+                    <span class="card-meta-label">Nombre d'emprunts</span>
+                    <span class="card-meta-value">{{ livre.nombre_emprunts }}</span>
+                </div>
+                <div class="card-meta-item">
+                    <span class="card-meta-label">Ajouté le</span>
+                    <span class="card-meta-value">{{ livre.created_at|date:"d/m/Y" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Historique des emprunts -->
+    <div style="margin-top: 3rem;">
+        <h2>Historique des emprunts</h2>
+        
+        {% if emprunts %}
+        <div class="table-responsive" style="margin-top: 1.5rem;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date d'emprunt</th>
+                        <th>Date de retour</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emprunt in emprunts %}
+                    <tr>
+                        <td>{{ emprunt.date_emprunt|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if emprunt.date_retour %}
+                                {{ emprunt.date_retour|date:"d/m/Y" }}
+                            {% else %}
+                                <em style="color: var(--color-text-muted);">Non retourné</em>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if emprunt.est_en_cours %}
+                                <span class="badge badge-warning">En cours</span>
+                            {% else %}
+                                <span class="badge badge-success">Retourné</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if emprunt.est_en_cours %}
+                                <a href="{% url 'emprunt_retour' emprunt.pk %}" class="btn btn-success" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                                    Marquer comme retourné
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state" style="padding: 2rem;">
+            <p style="color: var(--color-text-muted);">Ce livre n'a jamais été emprunté.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

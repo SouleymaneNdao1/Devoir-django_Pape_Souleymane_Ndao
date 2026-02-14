@@ -1,0 +1,41 @@
+{% extends 'livres/base.html' %}
+
+{% block title %}Supprimer {{ livre.titre }} - Bibliothèque{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 3rem; max-width: 600px;">
+    <div style="margin-bottom: 2rem;">
+        <a href="{% url 'livre_detail' livre.pk %}" style="color: var(--color-text-muted);">← Retour</a>
+    </div>
+
+    <div class="card fade-in" style="border-left: 4px solid var(--color-danger);">
+        <h1 class="card-title" style="color: var(--color-danger);">
+            Supprimer ce livre ?
+        </h1>
+
+        <div style="margin: 2rem 0;">
+            <p style="font-size: 1.1rem; color: var(--color-text);">
+                Êtes-vous sûr de vouloir supprimer le livre :
+            </p>
+            <p style="font-size: 1.3rem; font-weight: 600; margin: 1rem 0; color: var(--color-primary);">
+                "{{ livre.titre }}" de {{ livre.auteur }}
+            </p>
+            <p style="color: var(--color-danger); font-weight: 500;">
+                ⚠️ Cette action est irréversible. Tous les emprunts associés seront également supprimés.
+            </p>
+        </div>
+
+        <form method="post" style="margin-top: 2rem;">
+            {% csrf_token %}
+            <div style="display: flex; gap: 1rem;">
+                <button type="submit" class="btn btn-danger" style="flex: 1;">
+                    Oui, supprimer ce livre
+                </button>
+                <a href="{% url 'livre_detail' livre.pk %}" class="btn btn-secondary" style="flex: 1;">
+                    Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

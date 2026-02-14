@@ -1,0 +1,145 @@
+{% extends 'livres/base.html' %}
+
+{% block title %}Liste des emprunts - Bibliothèque{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 3rem;">
+    <div class="header-actions">
+        <h1>Gestion des emprunts</h1>
+        <a href="{% url 'emprunt_create' %}" class="btn btn-primary">Nouvel emprunt</a>
+    </div>
+
+    <!-- Filtres -->
+    <div class="filters">
+        <a href="?filter=all" class="filter-btn {% if filter_type == 'all' %}active{% endif %}">
+            Tous les emprunts
+        </a>
+        <a href="?filter=en_cours" class="filter-btn {% if filter_type == 'en_cours' %}active{% endif %}">
+            En cours
+        </a>
+        <a href="?filter=retournes" class="filter-btn {% if filter_type == 'retournes' %}active{% endif %}">
+            Retournés
+        </a>
+    </div>
+
+    <!-- Liste des emprunts -->
+    {% if page_obj %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Livre</th>
+                    <th>Auteur</th>
+                    <th>Date d'emprunt</th>
+                    <th>Date de retour</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emprunt in page_obj %}
+                <tr>
+                    <td>
+                        <a href="{% url 'livre_detail' emprunt.livre.pk %}" style="font-weight: 600; color: var(--color-primary);">
+                            {{ emprunt.livre.titre }}
+                        </a>
+                    </td>
+                    <td>{{ emprunt.livre.auteur }}</td>
+                    <td>{{ emprunt.date_emprunt|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if emprunt.date_retour %}
+                            {{ emprunt.date_retour|date:"d/m/Y" }}
+                        {% else %}
+                            <em style="color: var(--color-text-muted);">En cours</em>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if emprunt.est_en_cours %}
+                            <span class="badge badge-warning">En cours</span>
+                        {% else %}
+                            <span class="badge badge-success">Retourné</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem;">
+                            {% if emprunt.est_en_cours %}
+                            <a href="{% url 'emprunt_retour' emprunt.pk %}" class="btn btn-success" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                                Retourner
+                            </a>
+                            {% endif %}
+                            <a href="{% url 'emprunt_delete' emprunt.pk %}" class="btn btn-danger" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                                Supprimer
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav>
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li>
+                <a href="?page=1&filter={{ filter_type }}" class="page-link">‹‹ Première</a>
+            </li>
+            <li>
+                <a href="?page={{ page_obj.previous_page_number }}&filter={{ filter_type }}" class="page-link">‹ Précédente</a>
+            </li>
+            {% else %}
+            <li>
+                <span class="page-link disabled">‹‹ Première</span>
+            </li>
+            <li>
+                <span class="page-link disabled">‹ Précédente</span>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li>
+                    <span class="page-link active">{{ num }}</span>
+                </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li>
+                    <a href="?page={{ num }}&filter={{ filter_type }}" class="page-link">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li>
+                <a href="?page={{ page_obj.next_page_number }}&filter={{ filter_type }}" class="page-link">Suivante ›</a>
+            </li>
+            <li>
+                <a href="?page={{ page_obj.paginator.num_pages }}&filter={{ filter_type }}" class="page-link">Dernière ››</a>
+            </li>
+            {% else %}
+            <li>
+                <span class="page-link disabled">Suivante ›</span>
+            </li>
+            <li>
+                <span class="page-link disabled">Dernière ››</span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <p style="text-align: center; color: var(--color-text-muted); margin-top: 1rem;">
+        Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }} 
+        ({{ page_obj.paginator.count }} emprunt(s) au total)
+    </p>
+    {% endif %}
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">📖</div>
+        <h3 class="empty-state-title">Aucun emprunt trouvé</h3>
+        <p>Commencez par enregistrer votre premier emprunt.</p>
+        <a href="{% url 'emprunt_create' %}" class="btn btn-primary" style="margin-top: 1.5rem;">Nouvel emprunt</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

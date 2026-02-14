@@ -1,0 +1,63 @@
+{% extends 'livres/base.html' %}
+
+{% block title %}Retour d'emprunt - Bibliothèque{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 3rem; max-width: 600px;">
+    <div style="margin-bottom: 2rem;">
+        <a href="{% url 'emprunt_list' %}" style="color: var(--color-text-muted);">← Retour à la liste</a>
+    </div>
+
+    <div class="card fade-in" style="border-left: 4px solid var(--color-success);">
+        <h1 class="card-title" style="color: var(--color-success);">
+            Enregistrer le retour
+        </h1>
+
+        <div style="margin: 2rem 0;">
+            <div class="card-meta">
+                <div class="card-meta-item">
+                    <span class="card-meta-label">Livre</span>
+                    <span class="card-meta-value" style="font-size: 1.2rem;">{{ emprunt.livre.titre }}</span>
+                </div>
+                <div class="card-meta-item">
+                    <span class="card-meta-label">Auteur</span>
+                    <span class="card-meta-value">{{ emprunt.livre.auteur }}</span>
+                </div>
+                <div class="card-meta-item">
+                    <span class="card-meta-label">Date d'emprunt</span>
+                    <span class="card-meta-value">{{ emprunt.date_emprunt|date:"d/m/Y" }}</span>
+                </div>
+            </div>
+        </div>
+
+        <form method="post" style="margin-top: 2rem;">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="date_retour" class="form-label">Date de retour *</label>
+                <input 
+                    type="date" 
+                    id="date_retour" 
+                    name="date_retour" 
+                    class="form-control" 
+                    value="{{ today }}"
+                    min="{{ emprunt.date_emprunt|date:'Y-m-d' }}"
+                    required
+                >
+                <small style="color: var(--color-text-muted); font-size: 0.85rem; display: block; margin-top: 0.25rem;">
+                    La date de retour doit être postérieure ou égale à la date d'emprunt
+                </small>
+            </div>
+
+            <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                <button type="submit" class="btn btn-success" style="flex: 1;">
+                    Confirmer le retour
+                </button>
+                <a href="{% url 'emprunt_list' %}" class="btn btn-secondary">
+                    Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'livres/base.html' %}
+
+{% block title %}Supprimer l'emprunt - Bibliothèque{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 3rem; max-width: 600px;">
+    <div style="margin-bottom: 2rem;">
+        <a href="{% url 'emprunt_list' %}" style="color: var(--color-text-muted);">← Retour</a>
+    </div>
+
+    <div class="card fade-in" style="border-left: 4px solid var(--color-danger);">
+        <h1 class="card-title" style="color: var(--color-danger);">
+            Supprimer cet emprunt ?
+        </h1>
+
+        <div style="margin: 2rem 0;">
+            <p style="font-size: 1.1rem; color: var(--color-text);">
+                Êtes-vous sûr de vouloir supprimer cet emprunt ?
+            </p>
+            
+            <div class="card-meta" style="margin-top: 1.5rem;">
+                <div class="card-meta-item">
+                    <span class="card-meta-label">Livre</span>
+                    <span class="card-meta-value" style="font-size: 1.1rem;">{{ emprunt.livre.titre }}</span>
+                </div>
+                <div class="card-meta-item">
+                    <span class="card-meta-label">Date d'emprunt</span>
+                    <span class="card-meta-value">{{ emprunt.date_emprunt|date:"d/m/Y" }}</span>
+                </div>
+                <div class="card-meta-item">
+                    <span class="card-meta-label">Statut</span>
+                    <span class="card-meta-value">
+                        {% if emprunt.est_en_cours %}
+                            <span class="badge badge-warning">En cours</span>
+                        {% else %}
+                            <span class="badge badge-success">Retourné</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            
+            <p style="color: var(--color-danger); font-weight: 500; margin-top: 1.5rem;">
+                ⚠️ Cette action est irréversible.
+            </p>
+        </div>
+
+        <form method="post" style="margin-top: 2rem;">
+            {% csrf_token %}
+            <div style="display: flex; gap: 1rem;">
+                <button type="submit" class="btn btn-danger" style="flex: 1;">
+                    Oui, supprimer cet emprunt
+                </button>
+                <a href="{% url 'emprunt_list' %}" class="btn btn-secondary" style="flex: 1;">
+                    Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends 'livres/base.html' %}
+
+{% block title %}Liste des livres - Bibliothèque{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 3rem;">
+    <div class="header-actions">
+        <h1>Catalogue des livres</h1>
+        <a href="{% url 'livre_create' %}" class="btn btn-primary">Ajouter un livre</a>
+    </div>
+
+    <!-- Barre de recherche -->
+    <div class="search-bar">
+        <form method="get" style="position: relative;">
+            <input 
+                type="text" 
+                name="q" 
+                class="search-input" 
+                placeholder="Rechercher par titre, auteur ou ISBN..." 
+                value="{{ query }}"
+            >
+            <button type="submit" class="search-btn">Rechercher</button>
+        </form>
+    </div>
+
+    {% if query %}
+    <p style="color: var(--color-text-muted); margin-bottom: 2rem;">
+        {{ page_obj.paginator.count }} résultat(s) pour "{{ query }}"
+        <a href="{% url 'livre_list' %}" style="margin-left: 1rem;">Effacer la recherche</a>
+    </p>
+    {% endif %}
+
+    <!-- Liste des livres -->
+    {% if page_obj %}
+    <div class="livre-grid">
+        {% for livre in page_obj %}
+        <div class="livre-card fade-in">
+            {% if livre.est_disponible %}
+            <span class="livre-status disponible">Disponible</span>
+            {% else %}
+            <span class="livre-status emprunte">Emprunté</span>
+            {% endif %}
+            
+            <h3 class="card-title" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                <a href="{% url 'livre_detail' livre.pk %}" style="color: var(--color-primary);">
+                    {{ livre.titre }}
+                </a>
+            </h3>
+            
+            <div class="card-meta">
+                <div class="card-meta-item">
+                    <span class="card-meta-label">Auteur</span>
+                    <span class="card-meta-value">{{ livre.auteur }}</span>
+                </div>
+                <div class="card-meta-item">
+                    <span class="card-meta-label">ISBN</span>
+                    <span class="card-meta-value">{{ livre.isbn }}</span>
+                </div>
+            </div>
+            
+            <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem;">
+                <a href="{% url 'livre_detail' livre.pk %}" class="btn btn-secondary" style="flex: 1;">Voir détails</a>
+                <a href="{% url 'livre_update' livre.pk %}" class="btn btn-secondary">Modifier</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav>
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li>
+                <a href="?page=1{% if query %}&q={{ query }}{% endif %}" class="page-link">‹‹ Première</a>
+            </li>
+            <li>
+                <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}" class="page-link">‹ Précédente</a>
+            </li>
+            {% else %}
+            <li>
+                <span class="page-link disabled">‹‹ Première</span>
+            </li>
+            <li>
+                <span class="page-link disabled">‹ Précédente</span>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li>
+                    <span class="page-link active">{{ num }}</span>
+                </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li>
+                    <a href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}" class="page-link">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li>
+                <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}" class="page-link">Suivante ›</a>
+            </li>
+            <li>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}" class="page-link">Dernière ››</a>
+            </li>
+            {% else %}
+            <li>
+                <span class="page-link disabled">Suivante ›</span>
+            </li>
+            <li>
+                <span class="page-link disabled">Dernière ››</span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <p style="text-align: center; color: var(--color-text-muted); margin-top: 1rem;">
+        Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }} 
+        ({{ page_obj.paginator.count }} livre(s) au total)
+    </p>
+    {% endif %}
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">📚</div>
+        <h3 class="empty-state-title">Aucun livre trouvé</h3>
+        <p>Commencez par ajouter votre premier livre à la bibliothèque.</p>
+        <a href="{% url 'livre_create' %}" class="btn btn-primary" style="margin-top: 1.5rem;">Ajouter un livre</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'livres/base.html' %}
+
+{% block title %}Accueil - Bibliothèque{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <div class="container">
+        <h1 class="hero-title fade-in">Bienvenue dans votre bibliothèque</h1>
+        <p style="font-size: 1.2rem; color: var(--color-text-muted); max-width: 600px;">
+            Gérez facilement votre collection de livres et suivez tous vos emprunts en temps réel.
+        </p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Statistiques -->
+    <div class="stats-grid fade-in">
+        <div class="stat-card">
+            <div class="stat-value">{{ total_livres }}</div>
+            <div class="stat-label">Livres au total</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ livres_disponibles }}</div>
+            <div class="stat-label">Livres disponibles</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ emprunts_en_cours }}</div>
+            <div class="stat-label">Emprunts en cours</div>
+        </div>
+    </div>
+
+    <!-- Actions rapides -->
+    <div style="margin-top: 4rem; text-align: center;">
+        <h2 style="margin-bottom: 2rem;">Actions rapides</h2>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'livre_create' %}" class="btn btn-primary">Ajouter un livre</a>
+            <a href="{% url 'emprunt_create' %}" class="btn btn-primary">Nouvel emprunt</a>
+            <a href="{% url 'livre_list' %}" class="btn btn-secondary">Voir tous les livres</a>
+            <a href="{% url 'emprunt_list' %}" class="btn btn-secondary">Voir tous les emprunts</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
