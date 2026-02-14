@@ -33,7 +33,7 @@ Un système CRUD complet et moderne pour gérer une bibliothèque avec des livre
 -  Responsive design
 -  Messages de confirmation/erreur
 
-## 🚀 Installation
+##  Installation
 
 ### Prérequis
 - Python 3.8+
@@ -71,7 +71,7 @@ python manage.py runserver
 - Application : http://127.0.0.1:8000/
 - Admin Django : http://127.0.0.1:8000/admin/
 
-## 📁 Structure du Projet
+##  Structure du Projet
 
 ```
 bibliotheque_projet/
@@ -227,28 +227,6 @@ L'admin offre des fonctionnalités supplémentaires :
 - **Date d'emprunt** : Obligatoire
 - **Date de retour** : Doit être >= date d'emprunt (si fournie)
 
-##  Dépannage
-
-### Les styles CSS ne s'affichent pas
-```bash
-python manage.py collectstatic
-```
-
-### Erreur de migration
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
-
-### Port 8000 déjà utilisé
-```bash
-python manage.py runserver 8080
-```
-
-##  Licence
-
-Ce projet est un exercice éducatif pour apprendre Django et le développement web.
-
 ##  Technologies Utilisées
 
 - **Backend** : Django 4.2+
@@ -257,19 +235,3 @@ Ce projet est un exercice éducatif pour apprendre Django et le développement w
 - **Typographie** : Google Fonts (Crimson Pro, Work Sans)
 - **Architecture** : MVC (Model-View-Controller)
 
-##  Améliorations Futures Possibles
-
-- [ ] Système d'authentification utilisateur
-- [ ] Gestion des membres/emprunteurs
-- [ ] Notifications par email pour les retards
-- [ ] Export PDF des rapports
-- [ ] API REST avec Django Rest Framework
-- [ ] Gestion des catégories de livres
-- [ ] Système de réservation
-- [ ] Images de couverture pour les livres
-- [ ] Statistiques avancées et graphiques
-- [ ] Import/Export CSV des livres
-
----
-
-**Bon développement ! **
